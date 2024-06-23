@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity() {
         val cardStackView = findViewById<CardStackView>(R.id.cardStackView)
         val settingIcon = findViewById<ImageView>(R.id.settingIcon)
 
+
         settingIcon.setOnClickListener{
             val auth = Firebase.auth
             auth.signOut()

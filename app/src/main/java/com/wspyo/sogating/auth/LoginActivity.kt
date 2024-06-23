@@ -17,8 +17,6 @@ import com.wspyo.sogating.R
 
 class LoginActivity : AppCompatActivity() {
 
-
-
     private lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +39,4 @@ class LoginActivity : AppCompatActivity() {
                     }
             }
         }
-
-
 }

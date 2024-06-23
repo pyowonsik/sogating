@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "319453769737",
+    "project_id": "sogatig",
+    "storage_bucket": "sogatig.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:319453769737:android:bd3d2fc53a0c25bb46c8d8",
+        "android_client_info": {
+          "package_name": "com.wspyo.sogating"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1M3htjsHwxwyx0FBbcvYYE_uTWfmMnqY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

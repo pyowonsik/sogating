@@ -1,9 +1,8 @@
-package com.wspyo.sogating.auth
+package com.wspyo.sogating.setting
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -11,25 +10,25 @@ import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.wspyo.sogating.R
+import com.wspyo.sogating.auth.IntroActivity
 
-class IntroActivity : AppCompatActivity() {
+class SettingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_intro)
+        setContentView(R.layout.activity_setting)
 
-
-
-        val joinBtn : Button = findViewById(R.id.joinBtn)
-        joinBtn.setOnClickListener{
-            val intent = Intent(this,JoinActivity::class.java)
+        findViewById<Button>(R.id.myPageBtn).setOnClickListener{
+            val intent = Intent(this,MyPageActivity::class.java)
             startActivity(intent)
         }
 
+        findViewById<Button>(R.id.logoutBtn).setOnClickListener{
+            val auth = Firebase.auth
+            auth.signOut()
 
-        val loginBtn : Button = findViewById(R.id.loginBtn)
-        loginBtn.setOnClickListener{
-            val intent = Intent(this,LoginActivity::class.java)
+            val intent = Intent(this,IntroActivity::class.java)
             startActivity(intent)
         }
+
     }
 }

@@ -12,11 +12,34 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.wspyo.sogating.R
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+
+
 class IntroActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_intro)
 
+        val isTiramisuOrHigher = Build.VERSION.SDK_INT>= Build.VERSION_CODES.TIRAMISU
+        val notificationPermission = Manifest.permission.POST_NOTIFICATIONS
+
+        var hasNotificationPermission =
+            if (isTiramisuOrHigher)
+                ContextCompat.checkSelfPermission(this, notificationPermission) == PackageManager.PERMISSION_GRANTED
+            else true
+
+        val launcher = registerForActivityResult(ActivityResultContracts.RequestPermission()){
+            hasNotificationPermission = it
+
+        }
+
+        if (!hasNotificationPermission) {
+            launcher.launch(notificationPermission)
+        }
 
 
         val joinBtn : Button = findViewById(R.id.joinBtn)

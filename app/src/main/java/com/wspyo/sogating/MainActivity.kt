@@ -1,6 +1,10 @@
 package com.wspyo.sogating
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -8,6 +12,8 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
@@ -66,18 +72,18 @@ class MainActivity : AppCompatActivity() {
             override fun onCardSwiped(direction: Direction?) {
 
                 if(direction == Direction.Right){
-                    Toast.makeText(this@MainActivity,"right",Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this@MainActivity,"right",Toast.LENGTH_SHORT).show()
                     userLikeOtherUser(uid,usersDataList[userCount]?.uid.toString())
                 }
                 if(direction == Direction.Left){
-                    Toast.makeText(this@MainActivity,"left",Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this@MainActivity,"left",Toast.LENGTH_SHORT).show()
                 }
 
                 userCount = userCount + 1
 
                if(userCount == usersDataList.count()){
                    getUserDataList(currencyUserGender)
-                    Toast.makeText(this@MainActivity,"fetch newData",Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this@MainActivity,"fetch newData",Toast.LENGTH_SHORT).show()
                }
             }
 
@@ -141,8 +147,64 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun userLikeOtherUser(uid:String,otherUid:String){
-
         FirebaseRef.userLikeRef.child(uid).child(otherUid).setValue("true")
 
+        getOtherUserLikeList(otherUid)
+
+    }
+
+    private fun getOtherUserLikeList(otherUid: String){
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                for(dataModel in dataSnapshot.children){
+                    val likeUserKey = dataModel.key.toString()
+                    if(likeUserKey.equals(uid)){
+                        Toast.makeText(this@MainActivity,"매칭완료",Toast.LENGTH_SHORT).show()
+                        createNotificationChannel()
+                        sendNotification()
+                    }
+                }
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+        FirebaseRef.userLikeRef.child(otherUid).addValueEventListener(postListener)
+    }
+
+
+    // Notification
+    private fun createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is not in the Support Library.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "name"
+            val descriptionText = "description"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel("Test_Channel", name, importance).apply {
+                description = descriptionText
+            }
+            // Register the channel with the system.
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+
+    private fun sendNotification(){
+        var builder = NotificationCompat.Builder(this, "Test_Channel")
+            .setSmallIcon(R.drawable.ic_launcher_background)
+            .setContentTitle("매칭완료")
+            .setContentText("매칭이 완료 되었습니다. 저사람도 나를 좋아해요")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+//        with(NotificationManagerCompat.from(this)){
+//            notify(123, builder.build())
+//        }
+
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(123, builder.build())
     }
 }
